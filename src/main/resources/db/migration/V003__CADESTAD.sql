@@ -1,0 +1,120 @@
+-- Create table
+create table CADESTAD
+(
+  ncodiestad NUMBER not null,
+  ncodi_pais NUMBER not null,
+  ncodiregia NUMBER not null,
+  ccodiestad VARCHAR2(10) not null,
+  cnomeestad VARCHAR2(255) not null,
+  csiglestad VARCHAR2(10) not null
+);
+-- Add comments to the table 
+comment on table CADESTAD
+  is 'Estado';
+-- Add comments to the columns 
+comment on column CADESTAD.ncodiestad
+  is 'código do estado';
+comment on column CADESTAD.ncodi_pais
+  is 'código do pais';
+comment on column CADESTAD.ncodiregia
+  is 'código da região';  
+comment on column CADESTAD.ccodiestad
+  is 'código literal do estado';
+comment on column CADESTAD.cnomeestad
+  is 'nome do estado';
+comment on column CADESTAD.csiglestad
+  is 'sigla do estado';
+-- Create/Recreate indexes 
+create index FK_CADESTAD_CAD_PAIS on CADESTAD (NCODI_PAIS);
+create index FK_CADESTAD_CADREGIA on CADESTAD (NCODIREGIA);
+-- Create/Recreate primary, unique and foreign key constraints 
+alter table CADESTAD
+  add constraint PK_CADESTAD primary key (NCODIESTAD)
+  using index;
+alter table CADESTAD
+  add constraint FK_CADESTAD_CAD_PAIS foreign key (NCODI_PAIS)
+  references CAD_PAIS (NCODI_PAIS);
+alter table CADESTAD
+  add constraint FK_CADESTAD_CADREGIA foreign key (NCODIREGIA)
+  references CADREGIA (NCODIREGIA);
+  
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (1, 1, '12', 'ACRE', 'AC', 3);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (2, 1, '27', 'ALAGOAS', 'AL', 2);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (3, 1, '16', 'AMAPÁ', 'AP', 3);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (4, 1, '13', 'AMAZONAS', 'AM', 3);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (5, 1, '29', 'BAHIA', 'BA', 2);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (6, 1, '23', 'CEARÁ', 'CE', 2);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (7, 1, '53', 'DISTRITO FEDERAL', 'DF', 1);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (8, 1, '32', 'ESPÍRITO SANTO', 'ES', 4);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (9, 1, '52', 'GOIÁS', 'GO', 1);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (10, 1, '21', 'MARANHÃO', 'MA', 2);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (11, 1, '51', 'MATO GROSSO', 'MT', 1);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (12, 1, '50', 'MATO GROSSO DO SUL', 'MS', 1);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (13, 1, '31', 'MINAS GERAIS', 'MG', 4);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (16, 1, '41', 'PARANÁ', 'PR', 5);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (15, 1, '25', 'PARAÍBA', 'PB', 2);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (14, 1, '15', 'PARÁ', 'PA', 3);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (17, 1, '26', 'PERNAMBUCO', 'PE', 2);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (18, 1, '22', 'PIAUÍ', 'PI', 2);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (19, 1, '33', 'RIO DE JANEIRO', 'RJ', 4);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (20, 1, '24', 'RIO GRANDE DO NORTE', 'RN', 2);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (21, 1, '43', 'RIO GRANDE DO SUL', 'RS', 5);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (22, 1, '11', 'RONDÔNIA', 'RO', 3);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (23, 1, '14', 'RORAIMA', 'RR', 3);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (24, 1, '42', 'SANTA CATARINA', 'SC', 5);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (26, 1, '28', 'SERGIPE', 'SE', 2);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (25, 1, '35', 'SÃO PAULO', 'SP', 4);
+
+insert into CADESTAD (NCODIESTAD, NCODI_PAIS, CCODIESTAD, CNOMEESTAD, CSIGLESTAD, NCODIREGIA)
+values (27, 1, '17', 'TOCANTINS', 'TO', 3);  

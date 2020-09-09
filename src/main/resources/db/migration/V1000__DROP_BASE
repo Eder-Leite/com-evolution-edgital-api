@@ -1,0 +1,77 @@
+DECLARE
+  V_OWNER VARCHAR2(4000) := USER;
+BEGIN
+
+  DBMS_OUTPUT.PUT_LINE('INICIO');
+
+  FOR SEQUENCIA IN (SELECT 'DROP SEQUENCE ' || A.OWNER || '.' ||
+                           A.OBJECT_NAME NOME
+                      FROM DBA_OBJECTS A
+                     WHERE A.OWNER = V_OWNER
+                       AND A.OBJECT_TYPE = 'SEQUENCE'
+                     ORDER BY A.OBJECT_ID DESC) LOOP
+  
+    EXECUTE IMMEDIATE SEQUENCIA.NOME;
+  
+  END LOOP;
+
+  FOR VISAO IN (SELECT 'DROP VIEW ' || A.OWNER || '.' || A.OBJECT_NAME NOME
+                  FROM DBA_OBJECTS A
+                 WHERE A.OWNER = V_OWNER
+                   AND A.OBJECT_TYPE = 'VIEW'
+                 ORDER BY A.OBJECT_ID DESC) LOOP
+  
+    EXECUTE IMMEDIATE VISAO.NOME;
+  
+  END LOOP;
+
+  FOR PROCEDIMENTO IN (SELECT 'DROP PROCEDURE ' || A.OWNER || '.' ||
+                              A.OBJECT_NAME NOME
+                         FROM DBA_OBJECTS A
+                        WHERE A.OWNER = V_OWNER
+                          AND A.OBJECT_TYPE = 'PROCEDURE'
+                        ORDER BY A.OBJECT_ID DESC) LOOP
+  
+    EXECUTE IMMEDIATE PROCEDIMENTO.NOME;
+  
+  END LOOP;
+
+  FOR FUNCAO IN (SELECT 'DROP FUNCTION ' || A.OWNER || '.' || A.OBJECT_NAME NOME
+                   FROM DBA_OBJECTS A
+                  WHERE A.OWNER = V_OWNER
+                    AND A.OBJECT_TYPE = 'FUNCTION'
+                  ORDER BY A.OBJECT_ID DESC) LOOP
+  
+    EXECUTE IMMEDIATE FUNCAO.NOME;
+  
+  END LOOP;
+
+  FOR CHAVES IN (SELECT 'ALTER TABLE ' || A.OWNER || '.' || A.TABLE_NAME ||
+                        ' DISABLE CONSTRAINT ' || A.CONSTRAINT_NAME NOME
+                   FROM DBA_CONSTRAINTS A
+                  WHERE A.OWNER = V_OWNER) LOOP
+  
+    EXECUTE IMMEDIATE CHAVES.NOME;
+  
+  END LOOP;
+
+  FOR TABELA IN (SELECT 'DROP TABLE ' || A.OWNER || '.' || A.OBJECT_NAME ||
+                        ' PURGE' NOME
+                   FROM DBA_OBJECTS A
+                  WHERE A.OWNER = V_OWNER
+                    AND A.OBJECT_TYPE = 'TABLE'
+                  ORDER BY A.OBJECT_ID DESC) LOOP
+  
+    EXECUTE IMMEDIATE TABELA.NOME;
+  
+  END LOOP;
+
+  EXECUTE IMMEDIATE 'DROP TABLE ' || V_OWNER || '."schema_version" PURGE';
+
+  DBMS_OUTPUT.PUT_LINE('FIM');
+
+EXCEPTION
+  WHEN OTHERS THEN
+    DBMS_OUTPUT.PUT_LINE('OTHERS');
+END;
+/

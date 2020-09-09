@@ -1,0 +1,32 @@
+DECLARE
+  V     NUMBER;
+  TEXTO VARCHAR2(4000);
+BEGIN
+  FOR I IN (SELECT TABLE_NAME
+              FROM USER_TABLES
+             WHERE TABLE_NAME != 'schema_version'
+               AND TABLE_NAME NOT IN
+                   (SELECT SUBSTR(SEQUENCE_NAME, 6, 8) FROM USER_SEQUENCES)) LOOP
+  
+    EXECUTE IMMEDIATE 'SELECT COUNT(*) FROM ' || I.TABLE_NAME
+      INTO V;
+  
+    V := V + 1;
+  
+    TEXTO := 'CREATE SEQUENCE ' || SUBSTR(I.TABLE_NAME, 1, 3) || '_S' ||
+             I.TABLE_NAME || ' START WITH ' || V ||
+             ' INCREMENT BY 1 NOCACHE';
+  
+    BEGIN
+    
+      EXECUTE IMMEDIATE TEXTO;
+    
+    EXCEPTION
+      WHEN OTHERS THEN
+        DBMS_OUTPUT.PUT_LINE('ERRO...: ' || TEXTO);
+      
+    END;
+  END LOOP;
+
+END;
+/
