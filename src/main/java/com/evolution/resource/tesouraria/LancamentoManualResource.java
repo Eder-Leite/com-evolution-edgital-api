@@ -68,6 +68,20 @@ public class LancamentoManualResource {
 		return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
 	}
 
+	@PutMapping("/{id}/abrir")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('write')")
+	public void abrir(@PathVariable Long id) {
+		repository.TES_PMANIPULA_LANCAMENT_MANUAL("ABRIR", id, 1l, 1l);
+	}
+
+	@PutMapping("/{id}/fechar")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('write')")
+	public void fechar(@PathVariable Long id) {
+		repository.TES_PMANIPULA_LANCAMENT_MANUAL("FECHAR", id, 1l, 1l);
+	}
+
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('write')")
 	public ResponseEntity<LancamentoManual> update(@PathVariable Long id,
@@ -82,5 +96,4 @@ public class LancamentoManualResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

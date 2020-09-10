@@ -21,8 +21,8 @@ create table TESTITUL
   nvpagtitul NUMBER(19,2) default 0 not null,
   nvdestitul NUMBER(19,2) default 0 not null,
   nvjurtitul NUMBER(19,2) default 0 not null,
-  ntxjutitul NUMBER(5,2) default 0 not null,
-  ntxdetitul NUMBER(5,2) default 0 not null
+  ntxjutitul NUMBER(19,10) default 0 not null,
+  ntxdetitul NUMBER(19,10) default 0 not null
 );
 -- Add comments to the table 
 comment on table TESTITUL
@@ -106,3 +106,127 @@ alter table TESTITUL
 alter table TESTITUL
   add constraint FK_TESTITUL_TESTITUL foreign key (NTITPTITUL)
   references TESTITUL (NCODITITUL);
+  
+  
+CREATE OR REPLACE PROCEDURE TES_PMANIPULA_LANCAMENT_MANUAL(P_ACAO    VARCHAR2,
+                                                           P_CODIGO  NUMBER,
+                                                           P_EMPRESA NUMBER,
+                                                           P_USUARIO NUMBER) AS
+
+  --09/09/2020
+  --TES_PMANIPULA_LANCAMENTO_MANUAL
+
+  V_CONTADOR      NUMBER := 0;
+  V_TAXA_DESCONTO TESTITUL.NTXDETITUL%TYPE;
+  V_TAXA_JUROS    TESTITUL.NTXJUTITUL%TYPE;
+
+BEGIN
+
+  IF (P_ACAO = 'FECHAR') THEN
+  
+    FOR TAXA IN (SELECT NVL(SUM(DESCONTO), 0) DESCONTO,
+                        NVL(SUM(JUROS), 0) JUROS
+                   FROM (SELECT (A.NPERCPLLAN * B.NVLIDPREDE / 100) DESCONTO,
+                                (A.NPERCPLLAN * B.NVLIJPREDE / 100) JUROS
+                           FROM TESPLLAN A, TESPREDE B
+                          WHERE A.NCODIPREDE = B.NCODIPREDE
+                            AND A.NCODILANCM = P_CODIGO)) LOOP
+    
+      V_TAXA_JUROS    := TAXA.JUROS;
+      V_TAXA_DESCONTO := TAXA.DESCONTO;
+    
+    END LOOP;
+  
+    FOR REGISTRO IN (SELECT A.*,
+                            (SELECT NVL(SUM(P.NVALOPALAN), 0)
+                               FROM TESPALAN P
+                              WHERE P.NCODILANCM = A.NCODILANCM) PARCELA,
+                            (SELECT NVL(SUM(R.NVALOPLLAN), 0)
+                               FROM TESPLLAN R
+                              WHERE R.NCODILANCM = A.NCODILANCM) RATEIO
+                       FROM TESLANCM A
+                      WHERE A.NCODILANCM = P_CODIGO) LOOP
+    
+      IF (REGISTRO.CSITULANCM = 'FECHADO') THEN
+        RAISE_APPLICATION_ERROR(-20001,
+                                'ATENÇÃO ESSE REGISTRO JÁ ESTÁ FECHADO!');
+      END IF;
+    
+      IF (REGISTRO.NVALOLANCM <> REGISTRO.PARCELA) THEN
+        RAISE_APPLICATION_ERROR(-20001,
+                                'ATENÇÃO O VALOR DO LANÇAMENTO DEVE SER IGUAL O VALOR TOTAL DE PARCELAS!');
+      END IF;
+    
+      IF (REGISTRO.NVALOLANCM <> REGISTRO.RATEIO) THEN
+        RAISE_APPLICATION_ERROR(-20001,
+                                'ATENÇÃO O VALOR DO LANÇAMENTO DEVE SER IGUAL O VALOR TOTAL DO RATEIOS!');
+      END IF;
+    
+      FOR PARCELA IN (SELECT *
+                        FROM TESPALAN A
+                       WHERE A.NCODILANCM = REGISTRO.NCODILANCM
+                       ORDER BY A.DDVENPALAN) LOOP
+      
+        INSERT INTO TESTITUL
+          (NCODITITUL,
+           NCODIEMPRE,
+           NCODIGERAL,
+           NCODIUSUAR,
+           NCODILANCM,
+           CTIPOTITUL,
+           DDEMITITUL,
+           DDVENTITUL,
+           DDATATITUL,
+           CDOCUTITUL,
+           NPARCTITUL,
+           NVALOTITUL,
+           NTXJUTITUL,
+           NTXDETITUL)
+        VALUES
+          (TES_STESTITUL.NEXTVAL,
+           P_EMPRESA,
+           REGISTRO.NCODIGERAL,
+           P_USUARIO,
+           REGISTRO.NCODILANCM,
+           REGISTRO.CTIPOLANCM,
+           REGISTRO.DDATMLANCM,
+           PARCELA.DDVENPALAN,
+           SYSDATE,
+           REGISTRO.CDOCULANCM,
+           V_CONTADOR,
+           PARCELA.NVALOPALAN,
+           V_TAXA_JUROS,
+           V_TAXA_DESCONTO);
+      
+        V_CONTADOR := V_CONTADOR + 1;
+      
+      END LOOP;
+    
+      UPDATE TESLANCM A
+         SET A.CSITULANCM = 'FECHADO'
+       WHERE A.NCODILANCM = REGISTRO.NCODILANCM;
+    
+    END LOOP;
+  
+  ELSIF (P_ACAO = 'ABRIR') THEN
+  
+    FOR REGISTRO IN (SELECT * FROM TESLANCM A WHERE A.NCODILANCM = P_CODIGO) LOOP
+    
+      IF (REGISTRO.CSITULANCM = 'ABERTO') THEN
+        RAISE_APPLICATION_ERROR(-20001,
+                                'ATENÇÃO ESSE REGISTRO JÁ ESTÁ ABERTO!');
+      END IF;
+    
+      DELETE TESTITUL A WHERE A.NCODILANCM = REGISTRO.NCODILANCM;
+    
+      UPDATE TESLANCM A
+         SET A.CSITULANCM = 'ABERTO'
+       WHERE A.NCODILANCM = REGISTRO.NCODILANCM;
+    
+    END LOOP;
+  
+  END IF;
+
+END TES_PMANIPULA_LANCAMENT_MANUAL;
+/  
+  
