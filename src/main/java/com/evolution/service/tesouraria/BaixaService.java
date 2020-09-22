@@ -1,6 +1,5 @@
 package com.evolution.service.tesouraria;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class BaixaService {
 
 	@Transactional
 	public Baixa update(Long id, Baixa baixa) {
-		Baixa salvo = findById(id);
-
-		BeanUtils.copyProperties(baixa, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(baixa);
 	}
 
 	@Transactional
@@ -36,12 +35,7 @@ public class BaixaService {
 	}
 
 	public Baixa findById(Long id) {
-		Baixa salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Baixa salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
-
 	}
-
 }

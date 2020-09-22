@@ -15,6 +15,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.evolution.model.seguranca.enumerador.Status;
 
+@SuppressWarnings("deprecation")
 @Entity
 @Table(name = "SEGPERMI")
 public class Permissao {

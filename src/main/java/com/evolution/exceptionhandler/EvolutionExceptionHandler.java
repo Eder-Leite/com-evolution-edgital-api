@@ -30,7 +30,7 @@ public class EvolutionExceptionHandler extends ResponseEntityExceptionHandler {
 	@Override
 	protected ResponseEntity<Object> handleHttpMessageNotReadable(HttpMessageNotReadableException ex,
 			HttpHeaders headers, HttpStatus status, WebRequest request) {
-		String message = messageSource.getMessage("mensagem.invalida", null, LocaleContextHolder.getLocale());
+		String message = "Mensagem inválida.";
 		List<Erro> erros = Arrays.asList(new Erro(message));
 		return handleExceptionInternal(ex, erros.get(0), headers, HttpStatus.BAD_REQUEST, request);
 	}
@@ -45,8 +45,7 @@ public class EvolutionExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({ EmptyResultDataAccessException.class })
 	public ResponseEntity<Object> handleEmptyResultDataAccessException(EmptyResultDataAccessException ex,
 			WebRequest request) {
-		String message = messageSource.getMessage("recurso.nao-encontrado", null,
-				LocaleContextHolder.getLocale());
+		String message = "Registro não encontrado.";
 		List<Erro> erros = Arrays.asList(new Erro(message));
 		return handleExceptionInternal(ex, erros.get(0), new HttpHeaders(), HttpStatus.NOT_FOUND, request);
 	}
@@ -54,8 +53,7 @@ public class EvolutionExceptionHandler extends ResponseEntityExceptionHandler {
 	@ExceptionHandler({ DataIntegrityViolationException.class })
 	public ResponseEntity<Object> handleDataIntegrityViolationException(DataIntegrityViolationException ex,
 			WebRequest request) {
-		String message = messageSource.getMessage("recurso.operacao-nao-permitida", null,
-				LocaleContextHolder.getLocale());
+		String message = "Você não tem permissão para acessar esse recurso.";
 		List<Erro> erros = Arrays.asList(new Erro(message));
 		return handleExceptionInternal(ex, erros.get(0), new HttpHeaders(), HttpStatus.BAD_REQUEST, request);
 	}

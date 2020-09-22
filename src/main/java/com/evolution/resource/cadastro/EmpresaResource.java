@@ -1,13 +1,13 @@
 package com.evolution.resource.cadastro;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,15 +39,15 @@ public class EmpresaResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Empresa> findOne(@PathVariable Long id) {
-		Empresa empresa = repository.findOne(id);
-		return empresa != null ? ResponseEntity.ok(empresa) : ResponseEntity.notFound().build();
+		Optional<Empresa> empresa = repository.findById(id);
+		return empresa.isPresent() ? ResponseEntity.ok(empresa.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<Empresa> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "nome"));
+		return repository.findAll();
 	}
 
 	@PostMapping

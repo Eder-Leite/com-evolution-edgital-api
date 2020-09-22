@@ -1,13 +1,13 @@
 package com.evolution.resource.tesouraria;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,15 +39,15 @@ public class TipoPagamentoResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<TipoPagamento> findOne(@PathVariable Long id) {
-		TipoPagamento tipoPagamento = repository.findOne(id);
-		return tipoPagamento != null ? ResponseEntity.ok(tipoPagamento) : ResponseEntity.notFound().build();
+		Optional<TipoPagamento> tipoPagamento = repository.findById(id);
+		return tipoPagamento.isPresent() ? ResponseEntity.ok(tipoPagamento.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<TipoPagamento> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
 
 	@PostMapping
@@ -72,5 +72,4 @@ public class TipoPagamentoResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

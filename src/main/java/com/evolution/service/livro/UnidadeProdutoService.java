@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class UnidadeProdutoService {
 
 	@Transactional
 	public UnidadeProduto update(Long id, UnidadeProduto unidadeProduto) {
-		UnidadeProduto salvo = findById(id);
-
-		BeanUtils.copyProperties(unidadeProduto, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(unidadeProduto);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class UnidadeProdutoService {
 	}
 
 	public UnidadeProduto findById(Long id) {
-		UnidadeProduto salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		UnidadeProduto salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

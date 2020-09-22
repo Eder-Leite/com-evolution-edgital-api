@@ -1,6 +1,5 @@
 package com.evolution.service.tesouraria;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class PlanoReceitaDespesaService {
 
 	@Transactional
 	public PlanoReceitaDespesa update(Long id, PlanoReceitaDespesa planoReceitaDespesa) {
-		PlanoReceitaDespesa salvo = findById(id);
-
-		BeanUtils.copyProperties(planoReceitaDespesa, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(planoReceitaDespesa);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class PlanoReceitaDespesaService {
 	}
 
 	public PlanoReceitaDespesa findById(Long id) {
-		PlanoReceitaDespesa salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		PlanoReceitaDespesa salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

@@ -1,13 +1,13 @@
 package com.evolution.resource.livro;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,15 +39,15 @@ public class AliquotaIPIResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<AliquotaIPI> findOne(@PathVariable Long id) {
-		AliquotaIPI salvo = repository.findOne(id);
-		return salvo != null ? ResponseEntity.ok(salvo) : ResponseEntity.notFound().build();
+		Optional<AliquotaIPI> salvo = repository.findById(id);
+		return salvo.isPresent() ? ResponseEntity.ok(salvo.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<AliquotaIPI> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
 
 	@PostMapping

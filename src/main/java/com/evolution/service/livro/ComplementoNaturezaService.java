@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class ComplementoNaturezaService {
 
 	@Transactional
 	public ComplementoNatureza update(Long id, ComplementoNatureza complementoNatureza) {
-		ComplementoNatureza salvo = findById(id);
-
-		BeanUtils.copyProperties(complementoNatureza, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(complementoNatureza);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class ComplementoNaturezaService {
 	}
 
 	public ComplementoNatureza findById(Long id) {
-		ComplementoNatureza salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		ComplementoNatureza salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

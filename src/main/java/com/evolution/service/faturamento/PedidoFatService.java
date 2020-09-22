@@ -1,6 +1,5 @@
 package com.evolution.service.faturamento;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class PedidoFatService {
 
 	@Transactional
 	public PedidoFat update(Long id, PedidoFat pedido) {
-		PedidoFat salvo = findById(id);
-
-		BeanUtils.copyProperties(pedido, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(pedido);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class PedidoFatService {
 	}
 
 	public PedidoFat findById(Long id) {
-		PedidoFat salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		PedidoFat salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

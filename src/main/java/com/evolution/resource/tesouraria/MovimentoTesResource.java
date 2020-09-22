@@ -1,6 +1,7 @@
 package com.evolution.resource.tesouraria;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,15 +43,15 @@ public class MovimentoTesResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<MovimentoTes> findOne(@PathVariable Long id) {
-		MovimentoTes movimento = repository.findOne(id);
-		return movimento != null ? ResponseEntity.ok(movimento) : ResponseEntity.notFound().build();
+		Optional<MovimentoTes> movimento = repository.findById(id);
+		return movimento.isPresent() ? ResponseEntity.ok(movimento.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<MovimentoTes> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "data"));
+		return repository.findAll();
 	}
 
 	@GetMapping(params = "resumo")
@@ -62,7 +62,8 @@ public class MovimentoTesResource {
 
 	@PostMapping
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<MovimentoTes> create(@Valid @RequestBody MovimentoTes movimento, HttpServletResponse response) {
+	public ResponseEntity<MovimentoTes> create(@Valid @RequestBody MovimentoTes movimento,
+			HttpServletResponse response) {
 		MovimentoTes salvo = service.create(movimento);
 		return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
 	}
@@ -80,5 +81,4 @@ public class MovimentoTesResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

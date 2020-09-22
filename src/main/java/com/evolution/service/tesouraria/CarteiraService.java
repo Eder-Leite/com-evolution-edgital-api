@@ -1,6 +1,5 @@
 package com.evolution.service.tesouraria;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class CarteiraService {
 
 	@Transactional
 	public Carteira update(Long id, Carteira carteira) {
-		Carteira salvo = findById(id);
-
-		BeanUtils.copyProperties(carteira, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(carteira);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class CarteiraService {
 	}
 
 	public Carteira findById(Long id) {
-		Carteira salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Carteira salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

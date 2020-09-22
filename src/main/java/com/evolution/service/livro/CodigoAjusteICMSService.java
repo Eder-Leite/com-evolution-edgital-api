@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class CodigoAjusteICMSService {
 
 	@Transactional
 	public CodigoAjusteICMS update(Long id, CodigoAjusteICMS codigoAjusteICMS) {
-		CodigoAjusteICMS salvo = findById(id);
-
-		BeanUtils.copyProperties(codigoAjusteICMS, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(codigoAjusteICMS);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class CodigoAjusteICMSService {
 	}
 
 	public CodigoAjusteICMS findById(Long id) {
-		CodigoAjusteICMS salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		CodigoAjusteICMS salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

@@ -40,6 +40,5 @@ public class BasicSecurityConfig extends WebSecurityConfigurerAdapter {
 				.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
 			.and()
 			.csrf().disable();
-	}
-	
+	}	
 }

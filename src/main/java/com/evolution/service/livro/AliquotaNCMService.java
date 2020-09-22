@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class AliquotaNCMService {
 
 	@Transactional
 	public AliquotaNCM update(Long id, AliquotaNCM aliquotaNCM) {
-		AliquotaNCM salvo = findById(id);
-
-		BeanUtils.copyProperties(aliquotaNCM, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(aliquotaNCM);
 	}
 
 	@Transactional
@@ -36,12 +35,7 @@ public class AliquotaNCMService {
 	}
 
 	public AliquotaNCM findById(Long id) {
-		AliquotaNCM salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		AliquotaNCM salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
-
 	}
-
 }

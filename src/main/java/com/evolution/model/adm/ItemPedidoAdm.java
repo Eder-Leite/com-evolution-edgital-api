@@ -20,7 +20,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 @Table(name = "ADMITPED")
 @SuppressWarnings("deprecation")
-public class ItemPedido {
+public class ItemPedidoAdm {
 
 	@Id
 	@Column(name = "NCODIITPED", nullable = false)
@@ -164,20 +164,12 @@ public class ItemPedido {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ItemPedido other = (ItemPedido) obj;
+		ItemPedidoAdm other = (ItemPedidoAdm) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
 		} else if (!id.equals(other.id))
 			return false;
 		return true;
-	}
-
-	@Override
-	public String toString() {
-		return "ItemPedido [id=" + id + ", pedido=" + pedido + ", produto=" + produto + ", descricao=" + descricao
-				+ ", quantidade=" + quantidade + ", valorUnitario=" + valorUnitario + ", valorDesconto=" + valorDesconto
-				+ ", valorOutras=" + valorOutras + ", totalProdutoServico=" + totalProdutoServico + ", total=" + total
-				+ "]";
 	}
 }

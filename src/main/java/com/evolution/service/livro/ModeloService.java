@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class ModeloService {
 
 	@Transactional
 	public Modelo update(Long id, Modelo modelo) {
-		Modelo salvo = findById(id);
-
-		BeanUtils.copyProperties(modelo, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(modelo);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class ModeloService {
 	}
 
 	public Modelo findById(Long id) {
-		Modelo salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Modelo salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

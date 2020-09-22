@@ -1,6 +1,7 @@
 package com.evolution.resource.tesouraria;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,15 +43,15 @@ public class ContaResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Conta> findOne(@PathVariable Long id) {
-		Conta conta = repository.findOne(id);
-		return conta != null ? ResponseEntity.ok(conta) : ResponseEntity.notFound().build();
+		Optional<Conta> conta = repository.findById(id);
+		return conta.isPresent() ? ResponseEntity.ok(conta.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<Conta> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
 
 	@GetMapping(params = "resumo")
@@ -80,5 +80,4 @@ public class ContaResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

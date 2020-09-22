@@ -1,6 +1,5 @@
 package com.evolution.service.tesouraria;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class LocalFaturamentoService {
 
 	@Transactional
 	public LocalFaturamento update(Long id, LocalFaturamento localFaturamento) {
-		LocalFaturamento salvo = findById(id);
-
-		BeanUtils.copyProperties(localFaturamento, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(localFaturamento);
 	}
 
 	@Transactional
@@ -36,12 +35,7 @@ public class LocalFaturamentoService {
 	}
 
 	public LocalFaturamento findById(Long id) {
-		LocalFaturamento salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		LocalFaturamento salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
-
 	}
-
 }

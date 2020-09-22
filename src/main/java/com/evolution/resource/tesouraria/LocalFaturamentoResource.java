@@ -1,6 +1,7 @@
 package com.evolution.resource.tesouraria;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,15 +43,16 @@ public class LocalFaturamentoResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<LocalFaturamento> findOne(@PathVariable Long id) {
-		LocalFaturamento localFaturamento = repository.findOne(id);
-		return localFaturamento != null ? ResponseEntity.ok(localFaturamento) : ResponseEntity.notFound().build();
+		Optional<LocalFaturamento> localFaturamento = repository.findById(id);
+		return localFaturamento.isPresent() ? ResponseEntity.ok(localFaturamento.get())
+				: ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<LocalFaturamento> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
 
 	@GetMapping(params = "resumo")
@@ -62,14 +63,16 @@ public class LocalFaturamentoResource {
 
 	@PostMapping
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<LocalFaturamento> create(@Valid @RequestBody LocalFaturamento localFaturamento, HttpServletResponse response) {
+	public ResponseEntity<LocalFaturamento> create(@Valid @RequestBody LocalFaturamento localFaturamento,
+			HttpServletResponse response) {
 		LocalFaturamento salvo = service.create(localFaturamento);
 		return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<LocalFaturamento> update(@PathVariable Long id, @Valid @RequestBody LocalFaturamento localFaturamento) {
+	public ResponseEntity<LocalFaturamento> update(@PathVariable Long id,
+			@Valid @RequestBody LocalFaturamento localFaturamento) {
 		LocalFaturamento salvo = service.update(id, localFaturamento);
 		return ResponseEntity.ok(salvo);
 	}
@@ -80,5 +83,4 @@ public class LocalFaturamentoResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

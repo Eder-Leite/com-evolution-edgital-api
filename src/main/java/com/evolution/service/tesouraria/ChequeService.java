@@ -1,6 +1,5 @@
 package com.evolution.service.tesouraria;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -24,10 +23,10 @@ public class ChequeService {
 
 	@Transactional
 	public Cheque update(Long id, Cheque cheque) {
-		Cheque salvo = findById(id);
-
-		BeanUtils.copyProperties(cheque, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(cheque);
 	}
 
 	@Transactional
@@ -61,11 +60,7 @@ public class ChequeService {
 	}
 
 	public Cheque findById(Long id) {
-		Cheque salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Cheque salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

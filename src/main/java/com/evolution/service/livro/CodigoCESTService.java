@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -22,10 +21,10 @@ public class CodigoCESTService {
 	}
 
 	public CodigoCEST update(Long id, CodigoCEST codigoCEST) {
-		CodigoCEST salvo = findById(id);
-
-		BeanUtils.copyProperties(codigoCEST, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(codigoCEST);
 	}
 
 	@Transactional
@@ -35,11 +34,7 @@ public class CodigoCESTService {
 	}
 
 	public CodigoCEST findById(Long id) {
-		CodigoCEST salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		CodigoCEST salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

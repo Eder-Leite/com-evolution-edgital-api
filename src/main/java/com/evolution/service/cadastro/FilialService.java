@@ -1,6 +1,5 @@
 package com.evolution.service.cadastro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class FilialService {
 
 	@Transactional
 	public Filial update(Long id, Filial filial) {
-		Filial salvo = findById(id);
-
-		BeanUtils.copyProperties(filial, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(filial);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class FilialService {
 	}
 
 	public Filial findById(Long id) {
-		Filial salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Filial salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

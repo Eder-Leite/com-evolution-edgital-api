@@ -1,13 +1,13 @@
 package com.evolution.resource.livro;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,15 +39,15 @@ public class TributacaoResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Tributacao> findOne(@PathVariable Long id) {
-		Tributacao tributacao = repository.findOne(id);
-		return tributacao != null ? ResponseEntity.ok(tributacao) : ResponseEntity.notFound().build();
+		Optional<Tributacao> tributacao = repository.findById(id);
+		return tributacao.isPresent() ? ResponseEntity.ok(tributacao.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<Tributacao> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
 
 	@PostMapping
@@ -70,5 +70,4 @@ public class TributacaoResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

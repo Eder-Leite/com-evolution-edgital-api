@@ -1,15 +1,16 @@
 package com.evolution.resource.tesouraria;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -28,11 +29,15 @@ import com.evolution.model.tesouraria.LancamentoManual;
 import com.evolution.repository.tesouraria.LancamentoManualRepository;
 import com.evolution.repository.tesouraria.filter.LancamentoManualFilter;
 import com.evolution.repository.tesouraria.projection.LancamentoManualResumo;
+import com.evolution.security.EvolutionSecurity;
 import com.evolution.service.tesouraria.LancamentoManualService;
 
 @RestController
 @RequestMapping("/lancamentosManualFinanceiro")
 public class LancamentoManualResource {
+
+	@Autowired
+	private EvolutionSecurity security;
 
 	@Autowired
 	private LancamentoManualRepository repository;
@@ -43,15 +48,16 @@ public class LancamentoManualResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<LancamentoManual> findOne(@PathVariable Long id) {
-		LancamentoManual lancamentoManual = repository.findOne(id);
-		return lancamentoManual != null ? ResponseEntity.ok(lancamentoManual) : ResponseEntity.notFound().build();
+		Optional<LancamentoManual> lancamentoManual = repository.findById(id);
+		return lancamentoManual.isPresent() ? ResponseEntity.ok(lancamentoManual.get())
+				: ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<LancamentoManual> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
 
 	@GetMapping(params = "resumo")
@@ -72,14 +78,23 @@ public class LancamentoManualResource {
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('write')")
 	public void abrir(@PathVariable Long id) {
-		repository.TES_PMANIPULA_LANCAMENT_MANUAL("ABRIR", id, 1l, 1l);
+
+		Optional<LancamentoManual> lancamentoManual = repository.findById(id);
+
+		if (!lancamentoManual.isPresent()) {
+			throw new EmptyResultDataAccessException(1);
+		}
+
+		repository.TES_PMANIPULA_LANCAMENT_MANUAL("ABRIR", id,
+				security.getAuthentication().getFilial().getEmpresa().getId(), security.getAuthentication().getId());
 	}
 
 	@PutMapping("/{id}/fechar")
 	@ResponseStatus(HttpStatus.NO_CONTENT)
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('write')")
 	public void fechar(@PathVariable Long id) {
-		repository.TES_PMANIPULA_LANCAMENT_MANUAL("FECHAR", id, 1l, 1l);
+		repository.TES_PMANIPULA_LANCAMENT_MANUAL("FECHAR", id,
+				security.getAuthentication().getFilial().getEmpresa().getId(), security.getAuthentication().getId());
 	}
 
 	@PutMapping("/{id}")

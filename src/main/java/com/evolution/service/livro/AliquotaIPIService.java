@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class AliquotaIPIService {
 
 	@Transactional
 	public AliquotaIPI update(Long id, AliquotaIPI aliquotaIPI) {
-		AliquotaIPI salvo = findById(id);
-
-		BeanUtils.copyProperties(aliquotaIPI, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(aliquotaIPI);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class AliquotaIPIService {
 	}
 
 	public AliquotaIPI findById(Long id) {
-		AliquotaIPI salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		AliquotaIPI salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

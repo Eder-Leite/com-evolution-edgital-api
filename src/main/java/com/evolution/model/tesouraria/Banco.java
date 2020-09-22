@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.evolution.model.tesouraria.enumerador.Status;
 import com.evolution.model.tesouraria.enumerador.TipoBanco;
 
+@SuppressWarnings("deprecation")
 @Entity
 @Table(name = "TESBANCO")
 public class Banco {

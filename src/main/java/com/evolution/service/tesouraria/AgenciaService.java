@@ -1,6 +1,5 @@
 package com.evolution.service.tesouraria;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class AgenciaService {
 
 	@Transactional
 	public Agencia update(Long id, Agencia agencia) {
-		Agencia salvo = findById(id);
-
-		BeanUtils.copyProperties(agencia, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(agencia);
 	}
 
 	@Transactional
@@ -36,12 +35,7 @@ public class AgenciaService {
 	}
 
 	public Agencia findById(Long id) {
-		Agencia salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Agencia salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
-
 	}
-
 }

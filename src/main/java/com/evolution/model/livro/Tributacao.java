@@ -10,6 +10,7 @@ import javax.persistence.Table;
 
 import org.hibernate.validator.constraints.NotBlank;
 
+@SuppressWarnings("deprecation")
 @Entity
 @Table(name = "LIVTRIBU")
 public class Tributacao {

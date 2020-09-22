@@ -16,6 +16,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.evolution.model.livro.enumerador.Check;
 import com.evolution.model.livro.enumerador.Status;
 
+@SuppressWarnings("deprecation")
 @Entity
 @Table(name = "LIVCOMEN")
 public class ComentarioFiscal {

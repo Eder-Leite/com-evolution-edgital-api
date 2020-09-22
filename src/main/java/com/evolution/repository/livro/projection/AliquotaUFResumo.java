@@ -8,7 +8,7 @@ public class AliquotaUFResumo {
 	private String regiao;
 	private String estado;
 	private String finalidade;
-	private Long CFOP;
+	private String CFOP;
 	private String categoria;
 	private String subCategoria;
 	private String produto;
@@ -18,14 +18,14 @@ public class AliquotaUFResumo {
 		super();
 	}
 
-	public AliquotaUFResumo(Long id, String regiao, String estado, String finalidade, Long cFOP, String categoria,
+	public AliquotaUFResumo(Long id, String regiao, String estado, String finalidade, String CFOP, String categoria,
 			String subCategoria, String produto, Status status) {
 		super();
 		this.id = id;
 		this.regiao = regiao;
 		this.estado = estado;
 		this.finalidade = finalidade;
-		CFOP = cFOP;
+		this.CFOP = CFOP;
 		this.categoria = categoria;
 		this.subCategoria = subCategoria;
 		this.produto = produto;
@@ -64,12 +64,12 @@ public class AliquotaUFResumo {
 		this.finalidade = finalidade;
 	}
 
-	public Long getCFOP() {
+	public String getCFOP() {
 		return CFOP;
 	}
 
-	public void setCFOP(Long cFOP) {
-		CFOP = cFOP;
+	public void setCFOP(String CFOP) {
+		this.CFOP = CFOP;
 	}
 
 	public String getCategoria() {
@@ -103,12 +103,4 @@ public class AliquotaUFResumo {
 	public void setStatus(Status status) {
 		this.status = status;
 	}
-
-	@Override
-	public String toString() {
-		return "AliquotaUFResumo [id=" + id + ", regiao=" + regiao + ", estado=" + estado + ", finalidade=" + finalidade
-				+ ", CFOP=" + CFOP + ", categoria=" + categoria + ", subCategoria=" + subCategoria + ", produto="
-				+ produto + ", status=" + status + "]";
-	}
-
 }

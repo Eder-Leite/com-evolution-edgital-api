@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class AliquotaUFService {
 
 	@Transactional
 	public AliquotaUF update(Long id, AliquotaUF aliquotaUF) {
-		AliquotaUF salvo = findById(id);
-
-		BeanUtils.copyProperties(aliquotaUF, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(aliquotaUF);
 	}
 
 	@Transactional
@@ -36,12 +35,7 @@ public class AliquotaUFService {
 	}
 
 	public AliquotaUF findById(Long id) {
-		AliquotaUF salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		AliquotaUF salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
-
 	}
-
 }

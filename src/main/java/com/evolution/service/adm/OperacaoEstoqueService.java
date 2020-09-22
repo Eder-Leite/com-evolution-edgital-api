@@ -1,6 +1,5 @@
 package com.evolution.service.adm;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class OperacaoEstoqueService {
 
 	@Transactional
 	public OperacaoEstoque update(Long id, OperacaoEstoque operacaoEstoque) {
-		OperacaoEstoque salvo = findById(id);
-
-		BeanUtils.copyProperties(operacaoEstoque, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(operacaoEstoque);
 	}
 
 	@Transactional
@@ -36,10 +35,7 @@ public class OperacaoEstoqueService {
 	}
 
 	public OperacaoEstoque findById(Long id) {
-		OperacaoEstoque salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		OperacaoEstoque salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
 }

@@ -1,13 +1,13 @@
 package com.evolution.resource.livro;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,17 +39,17 @@ public class OrigemResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Origem> findOne(@PathVariable Long id) {
-		Origem origem = repository.findOne(id);
-		return origem != null ? ResponseEntity.ok(origem) : ResponseEntity.notFound().build();
+		Optional<Origem> origem = repository.findById(id);
+		return origem.isPresent() ? ResponseEntity.ok(origem.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<Origem> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
-	
+
 	@GetMapping(params = "resumo")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<Origem> findByCodigoContaining(String codigo) {
@@ -76,5 +76,4 @@ public class OrigemResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

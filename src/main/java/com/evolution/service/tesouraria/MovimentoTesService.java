@@ -1,6 +1,5 @@
 package com.evolution.service.tesouraria;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class MovimentoTesService {
 
 	@Transactional
 	public MovimentoTes update(Long id, MovimentoTes movimento) {
-		MovimentoTes salvo = findById(id);
-
-		BeanUtils.copyProperties(movimento, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(movimento);
 	}
 
 	@Transactional
@@ -36,12 +35,7 @@ public class MovimentoTesService {
 	}
 
 	public MovimentoTes findById(Long id) {
-		MovimentoTes salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		MovimentoTes salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
-
 	}
-
 }

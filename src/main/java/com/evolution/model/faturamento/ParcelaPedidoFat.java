@@ -1,4 +1,4 @@
-package com.evolution.model.adm;
+package com.evolution.model.faturamento;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -22,22 +22,22 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonFormat;
 
 @Entity
-@Table(name = "ADMPAPED")
+@Table(name = "FATPAPED")
 @SuppressWarnings("deprecation")
-public class ParcelaPedido {
+public class ParcelaPedidoFat {
 
 	@Id
 	@Column(name = "NCODIPAPED", nullable = false)
-	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "ADM_SADMPAPED")
-	@SequenceGenerator(sequenceName = "ADM_SADMPAPED", allocationSize = 1, name = "ADM_SADMPAPED")
+	@GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "FAT_SFATPAPED")
+	@SequenceGenerator(sequenceName = "FAT_SFATPAPED", allocationSize = 1, name = "FAT_SFATPAPED")
 	private Long id;
 
 	@ManyToOne
 	@JsonBackReference
 	@NotNull(message = "é obrigatório")
-	@ForeignKey(name = "FK_ADMPAPED_ADMPEDID")
+	@ForeignKey(name = "FK_FATPAPED_FATPEDID")
 	@JoinColumn(name = "NCODIPEDID", nullable = false)
-	private PedidoAdm pedido;
+	private PedidoFat pedido;
 
 	@NotNull(message = "é obrigatório")
 	@Column(name = "NVALOPAPED", nullable = false, precision = 19, scale = 2)
@@ -57,11 +57,11 @@ public class ParcelaPedido {
 		this.id = id;
 	}
 
-	public PedidoAdm getPedido() {
+	public PedidoFat getPedido() {
 		return pedido;
 	}
 
-	public void setPedido(PedidoAdm pedido) {
+	public void setPedido(PedidoFat pedido) {
 		this.pedido = pedido;
 	}
 
@@ -97,7 +97,7 @@ public class ParcelaPedido {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ParcelaPedido other = (ParcelaPedido) obj;
+		ParcelaPedidoFat other = (ParcelaPedidoFat) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;

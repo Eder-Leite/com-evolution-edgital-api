@@ -10,7 +10,6 @@ import java.util.Map;
 import javax.servlet.http.HttpServletResponse;
 import javax.sql.DataSource;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.http.HttpHeaders;
@@ -59,8 +58,7 @@ public class UsuarioService {
 
 		usuario = setRoles(usuario);
 
-		BeanUtils.copyProperties(usuario, salvo, "id");
-		return repository.save(salvo);
+		return repository.save(usuario);
 	}
 
 	@Transactional
@@ -139,10 +137,7 @@ public class UsuarioService {
 	}
 
 	public Usuario findById(Long id) {
-		Usuario salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Usuario salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
 

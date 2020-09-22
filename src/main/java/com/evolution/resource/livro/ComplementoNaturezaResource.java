@@ -1,6 +1,7 @@
 package com.evolution.resource.livro;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,15 +43,16 @@ public class ComplementoNaturezaResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<ComplementoNatureza> findOne(@PathVariable Long id) {
-		ComplementoNatureza complementoNatureza = repository.findOne(id);
-		return complementoNatureza != null ? ResponseEntity.ok(complementoNatureza) : ResponseEntity.notFound().build();
+		Optional<ComplementoNatureza> complementoNatureza = repository.findById(id);
+		return complementoNatureza.isPresent() ? ResponseEntity.ok(complementoNatureza.get())
+				: ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<ComplementoNatureza> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
 
 	@GetMapping(params = "resumo")
@@ -82,5 +83,4 @@ public class ComplementoNaturezaResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

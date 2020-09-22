@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class FinalidadeService {
 
 	@Transactional
 	public Finalidade update(Long id, Finalidade finalidade) {
-		Finalidade salvo = findById(id);
-
-		BeanUtils.copyProperties(finalidade, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(finalidade);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class FinalidadeService {
 	}
 
 	public Finalidade findById(Long id) {
-		Finalidade salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Finalidade salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

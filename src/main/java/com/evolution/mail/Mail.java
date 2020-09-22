@@ -1,4 +1,4 @@
-package com.evolution.email;
+package com.evolution.mail;
 
 import java.util.List;
 import java.util.Map;

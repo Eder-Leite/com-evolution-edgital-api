@@ -261,11 +261,11 @@ public class PedidoFat {
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<ItemPedido> itens = new ArrayList<>();
+	private List<ItemPedidoFat> itens = new ArrayList<>();
 
 	@JsonManagedReference
 	@OneToMany(mappedBy = "pedido", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
-	private List<ParcelaPedido> parcelas = new ArrayList<>();
+	private List<ParcelaPedidoFat> parcelas = new ArrayList<>();
 
 	public Long getId() {
 		return id;
@@ -643,19 +643,19 @@ public class PedidoFat {
 		this.observacao = observacao;
 	}
 
-	public List<ItemPedido> getItens() {
+	public List<ItemPedidoFat> getItens() {
 		return itens;
 	}
 
-	public void setItens(List<ItemPedido> itens) {
+	public void setItens(List<ItemPedidoFat> itens) {
 		this.itens = itens;
 	}
 
-	public List<ParcelaPedido> getParcelas() {
+	public List<ParcelaPedidoFat> getParcelas() {
 		return parcelas;
 	}
 
-	public void setParcelas(List<ParcelaPedido> parcelas) {
+	public void setParcelas(List<ParcelaPedidoFat> parcelas) {
 		this.parcelas = parcelas;
 	}
 

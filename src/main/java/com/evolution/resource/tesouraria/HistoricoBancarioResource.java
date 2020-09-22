@@ -1,13 +1,13 @@
 package com.evolution.resource.tesouraria;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,27 +39,30 @@ public class HistoricoBancarioResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<HistoricoBancario> findOne(@PathVariable Long id) {
-		HistoricoBancario historicoBancario = repository.findOne(id);
-		return historicoBancario != null ? ResponseEntity.ok(historicoBancario) : ResponseEntity.notFound().build();
+		Optional<HistoricoBancario> historicoBancario = repository.findById(id);
+		return historicoBancario.isPresent() ? ResponseEntity.ok(historicoBancario.get())
+				: ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<HistoricoBancario> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
 
 	@PostMapping
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<HistoricoBancario> create(@Valid @RequestBody HistoricoBancario historicoBancario, HttpServletResponse response) {
+	public ResponseEntity<HistoricoBancario> create(@Valid @RequestBody HistoricoBancario historicoBancario,
+			HttpServletResponse response) {
 		HistoricoBancario salvo = service.create(historicoBancario);
 		return ResponseEntity.status(HttpStatus.CREATED).body(salvo);
 	}
 
 	@PutMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('write')")
-	public ResponseEntity<HistoricoBancario> update(@PathVariable Long id, @Valid @RequestBody HistoricoBancario historicoBancario) {
+	public ResponseEntity<HistoricoBancario> update(@PathVariable Long id,
+			@Valid @RequestBody HistoricoBancario historicoBancario) {
 		HistoricoBancario salvo = service.update(id, historicoBancario);
 		return ResponseEntity.ok(salvo);
 	}

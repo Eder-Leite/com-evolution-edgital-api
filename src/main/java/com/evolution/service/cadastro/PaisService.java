@@ -1,6 +1,5 @@
 package com.evolution.service.cadastro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class PaisService {
 
 	@Transactional
 	public Pais update(Long id, Pais pais) {
-		Pais salvo = findById(id);
-
-		BeanUtils.copyProperties(pais, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(pais);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class PaisService {
 	}
 
 	public Pais findById(Long id) {
-		Pais salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Pais salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

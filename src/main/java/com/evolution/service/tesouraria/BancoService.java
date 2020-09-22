@@ -1,6 +1,5 @@
 package com.evolution.service.tesouraria;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class BancoService {
 
 	@Transactional
 	public Banco update(Long id, Banco banco) {
-		Banco salvo = findById(id);
-
-		BeanUtils.copyProperties(banco, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(banco);
 	}
 
 	@Transactional
@@ -36,12 +35,7 @@ public class BancoService {
 	}
 
 	public Banco findById(Long id) {
-		Banco salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Banco salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
-
 	}
-
 }

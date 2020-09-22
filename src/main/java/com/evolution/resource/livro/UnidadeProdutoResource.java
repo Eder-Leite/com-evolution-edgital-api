@@ -1,6 +1,7 @@
 package com.evolution.resource.livro;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,15 +43,15 @@ public class UnidadeProdutoResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<UnidadeProduto> findOne(@PathVariable Long id) {
-		UnidadeProduto unidadeProduto = repository.findOne(id);
-		return unidadeProduto != null ? ResponseEntity.ok(unidadeProduto) : ResponseEntity.notFound().build();
+		Optional<UnidadeProduto> unidadeProduto = repository.findById(id);
+		return unidadeProduto.isPresent() ? ResponseEntity.ok(unidadeProduto.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<UnidadeProduto> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
 
 	@GetMapping(params = "resumo")
@@ -82,5 +82,4 @@ public class UnidadeProdutoResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

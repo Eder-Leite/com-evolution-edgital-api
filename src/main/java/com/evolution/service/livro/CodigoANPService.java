@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class CodigoANPService {
 
 	@Transactional
 	public CodigoANP update(Long id, CodigoANP codigoANP) {
-		CodigoANP salvo = findById(id);
-
-		BeanUtils.copyProperties(codigoANP, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(codigoANP);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class CodigoANPService {
 	}
 
 	public CodigoANP findById(Long id) {
-		CodigoANP salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		CodigoANP salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

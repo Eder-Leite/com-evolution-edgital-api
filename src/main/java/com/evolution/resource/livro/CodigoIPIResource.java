@@ -1,13 +1,13 @@
 package com.evolution.resource.livro;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -39,15 +39,15 @@ public class CodigoIPIResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<CodigoIPI> findOne(@PathVariable Long id) {
-		CodigoIPI codigoIPI = repository.findOne(id);
-		return codigoIPI != null ? ResponseEntity.ok(codigoIPI) : ResponseEntity.notFound().build();
+		Optional<CodigoIPI> codigoIPI = repository.findById(id);
+		return codigoIPI.isPresent() ? ResponseEntity.ok(codigoIPI.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<CodigoIPI> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "descricao"));
+		return repository.findAll();
 	}
 
 	@PostMapping
@@ -70,5 +70,4 @@ public class CodigoIPIResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

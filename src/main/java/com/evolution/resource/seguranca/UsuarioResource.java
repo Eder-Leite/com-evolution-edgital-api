@@ -3,6 +3,7 @@ package com.evolution.resource.seguranca;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +12,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -27,6 +27,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.evolution.mail.EmailService;
+import com.evolution.mail.Mail;
 import com.evolution.model.seguranca.Usuario;
 import com.evolution.repository.seguranca.UsuarioRepository;
 import com.evolution.repository.seguranca.filter.PerfilUsuario;
@@ -35,8 +37,6 @@ import com.evolution.repository.seguranca.filter.UsuarioFilter;
 import com.evolution.repository.seguranca.projection.UsuarioResumo;
 import com.evolution.service.NegocioExceptionService;
 import com.evolution.service.seguranca.UsuarioService;
-import com.evolution.email.EmailService;
-import com.evolution.email.Mail;
 
 @RestController
 @RequestMapping("/usuarios")
@@ -56,11 +56,11 @@ public class UsuarioResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Usuario> findOne(@PathVariable Long id) {
-		Usuario usuario = repository.findOne(id);
+		Optional<Usuario> usuario = repository.findById(id);
 
-		if (usuario != null) {
-			usuario.setSenha(null);
-			return ResponseEntity.ok(usuario);
+		if (usuario.isPresent()) {
+			usuario.get().setSenha(null);
+			return ResponseEntity.ok(usuario.get());
 		}
 
 		return ResponseEntity.notFound().build();
@@ -69,7 +69,7 @@ public class UsuarioResource {
 	@GetMapping
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<Usuario> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "nome"));
+		return repository.findAll();
 	}
 
 	@PostMapping
@@ -111,10 +111,10 @@ public class UsuarioResource {
 			throw new NegocioExceptionService("Atenção a senha digitada não confere com a senha antiga!");
 		}
 
-		Usuario usuarioSalva = repository.findOne(p.getId());
-		usuarioSalva.setSenha(p.getSenhaNova());
-		usuarioSalva.setSenha(encodaSenha(usuarioSalva.getSenha()));
-		usuarioService.update(usuarioSalva.getId(), usuarioSalva);
+		Optional<Usuario> usuarioSalva = repository.findById(p.getId());
+		usuarioSalva.get().setSenha(p.getSenhaNova());
+		usuarioSalva.get().setSenha(encodaSenha(usuarioSalva.get().getSenha()));
+		usuarioService.update(usuarioSalva.get().getId(), usuarioSalva.get());
 
 		return ResponseEntity.status(HttpStatus.CREATED).body(p);
 	}
@@ -173,10 +173,10 @@ public class UsuarioResource {
 	}
 
 	public boolean autenticacaoSenha(PerfilUsuario p) {
-		Usuario usuario = repository.findOne(p.getId());
+		Optional<Usuario> usuario = repository.findById(p.getId());
 		BCryptPasswordEncoder password = new BCryptPasswordEncoder();
 
-		if (password.matches(p.getSenhaAntiga(), usuario.getSenha())) {
+		if (password.matches(p.getSenhaAntiga(), usuario.get().getSenha())) {
 			return true;
 		} else {
 			return false;

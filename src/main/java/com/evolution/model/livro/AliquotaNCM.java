@@ -18,6 +18,7 @@ import org.hibernate.validator.constraints.NotBlank;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+@SuppressWarnings("deprecation")
 @Entity
 @Table(name = "LIVALNCM")
 public class AliquotaNCM {

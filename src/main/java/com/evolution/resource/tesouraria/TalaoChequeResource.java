@@ -1,6 +1,7 @@
 package com.evolution.resource.tesouraria;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,15 +43,15 @@ public class TalaoChequeResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<TalaoCheque> findOne(@PathVariable Long id) {
-		TalaoCheque talaoCheque = repository.findOne(id);
-		return talaoCheque != null ? ResponseEntity.ok(talaoCheque) : ResponseEntity.notFound().build();
+		Optional<TalaoCheque> talaoCheque = repository.findById(id);
+		return talaoCheque.isPresent() ? ResponseEntity.ok(talaoCheque.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<TalaoCheque> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "numero"));
+		return repository.findAll();
 	}
 
 	@GetMapping(params = "resumo")
@@ -81,5 +81,4 @@ public class TalaoChequeResource {
 	public void delete(@PathVariable Long id) {
 		service.delete(id);
 	}
-
 }

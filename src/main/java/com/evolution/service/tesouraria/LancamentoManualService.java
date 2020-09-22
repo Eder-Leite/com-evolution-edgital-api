@@ -1,6 +1,5 @@
 package com.evolution.service.tesouraria;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,9 +22,9 @@ public class LancamentoManualService {
 
 	@Transactional
 	public LancamentoManual update(Long id, LancamentoManual lancamentoManual) {
-		LancamentoManual salvo = findById(id);
-
-		//BeanUtils.copyProperties(lancamentoManual, salvo, "id");
+		
+		findById(id);
+		
 		return repository.save(lancamentoManual);
 	}
 
@@ -36,12 +35,7 @@ public class LancamentoManualService {
 	}
 
 	public LancamentoManual findById(Long id) {
-		LancamentoManual salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		LancamentoManual salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
-
 	}
-
 }

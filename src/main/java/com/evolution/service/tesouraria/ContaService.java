@@ -1,6 +1,5 @@
 package com.evolution.service.tesouraria;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class ContaService {
 
 	@Transactional
 	public Conta update(Long id, Conta conta) {
-		Conta salvo = findById(id);
-
-		BeanUtils.copyProperties(conta, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(conta);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class ContaService {
 	}
 
 	public Conta findById(Long id) {
-		Conta salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Conta salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

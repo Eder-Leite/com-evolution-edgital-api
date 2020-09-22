@@ -1,6 +1,7 @@
 package com.evolution.resource.cadastro;
 
 import java.util.List;
+import java.util.Optional;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -9,7 +10,6 @@ import javax.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -43,15 +43,15 @@ public class CadastroResource {
 	@GetMapping("/{id}")
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public ResponseEntity<Cadastro> findOne(@PathVariable Long id) {
-		Cadastro cadastro = repository.findOne(id);
-		return cadastro != null ? ResponseEntity.ok(cadastro) : ResponseEntity.notFound().build();
+		Optional<Cadastro> cadastro = repository.findById(id);
+		return cadastro.isPresent() ? ResponseEntity.ok(cadastro.get()) : ResponseEntity.notFound().build();
 	}
 
 	@GetMapping
 	@ResponseBody
 	@PreAuthorize("hasAnyAuthority('ROLE_DESENVOLVEDOR') and #oauth2.hasScope('read')")
 	public List<Cadastro> findAll(HttpServletRequest request) {
-		return repository.findAll(new Sort(Sort.Direction.ASC, "nomeRazao"));
+		return repository.findAll();
 	}
 
 	@GetMapping(params = "resumo")

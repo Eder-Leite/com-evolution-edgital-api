@@ -1,4 +1,4 @@
-package com.evolution.email;
+package com.evolution.mail;
 
 public class Contato {
 

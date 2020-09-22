@@ -1,6 +1,5 @@
 package com.evolution.service.cadastro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class EstadoService {
 
 	@Transactional
 	public Estado update(Long id, Estado estado) {
-		Estado salvo = findById(id);
-
-		BeanUtils.copyProperties(estado, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(estado);
 	}
 
 	@Transactional
@@ -36,12 +35,7 @@ public class EstadoService {
 	}
 
 	public Estado findById(Long id) {
-		Estado salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Estado salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
-
 	}
-
 }

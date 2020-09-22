@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class TributacaoService {
 
 	@Transactional
 	public Tributacao update(Long id, Tributacao tributacao) {
-		Tributacao salvo = findById(id);
-
-		BeanUtils.copyProperties(tributacao, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(tributacao);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class TributacaoService {
 	}
 
 	public Tributacao findById(Long id) {
-		Tributacao salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Tributacao salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

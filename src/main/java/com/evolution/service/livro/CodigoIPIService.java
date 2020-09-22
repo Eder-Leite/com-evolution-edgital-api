@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -8,8 +7,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.evolution.model.livro.CodigoIPI;
 import com.evolution.repository.livro.CodigoIPIRepository;
-
-
 
 @Service
 public class CodigoIPIService {
@@ -25,10 +22,10 @@ public class CodigoIPIService {
 
 	@Transactional
 	public CodigoIPI update(Long id, CodigoIPI codigoIPI) {
-		CodigoIPI salvo = findById(id);
-
-		BeanUtils.copyProperties(codigoIPI, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(codigoIPI);
 	}
 
 	@Transactional
@@ -38,11 +35,7 @@ public class CodigoIPIService {
 	}
 
 	public CodigoIPI findById(Long id) {
-		CodigoIPI salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		CodigoIPI salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }

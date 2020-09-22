@@ -84,7 +84,7 @@ public class ItemAliquotaUF {
 	@NotNull(message = "é obrigatório")
 	@Enumerated(EnumType.STRING)
 	@Column(name = "CPAUTITALI", nullable = false)
-	private Check pauta = Check.SIM;
+	private Check pauta = Check.NÃO;
 
 	@NotNull(message = "é obrigatório")
 	@Column(name = "NVPAUITALI", nullable = false, precision = 7, scale = 4)

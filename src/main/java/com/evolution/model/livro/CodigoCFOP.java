@@ -15,6 +15,7 @@ import org.hibernate.validator.constraints.NotBlank;
 
 import com.evolution.model.livro.enumerador.TipoMovimento;
 
+@SuppressWarnings("deprecation")
 @Entity
 @Table(name = "LIV_CFOP")
 public class CodigoCFOP {

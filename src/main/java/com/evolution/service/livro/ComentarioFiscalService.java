@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class ComentarioFiscalService {
 
 	@Transactional
 	public ComentarioFiscal update(Long id, ComentarioFiscal comentarioFiscal) {
-		ComentarioFiscal salvo = findById(id);
-
-		BeanUtils.copyProperties(comentarioFiscal, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(comentarioFiscal);
 	}
 
 	@Transactional
@@ -36,12 +35,7 @@ public class ComentarioFiscalService {
 	}
 
 	public ComentarioFiscal findById(Long id) {
-		ComentarioFiscal salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		ComentarioFiscal salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
-
 	}
-
 }

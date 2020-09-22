@@ -23,7 +23,7 @@ import com.fasterxml.jackson.annotation.JsonBackReference;
 @Entity
 @Table(name = "FATITPED")
 @SuppressWarnings("deprecation")
-public class ItemPedido {
+public class ItemPedidoFat {
 
 	@Id
 	@Column(name = "NCODIITPED", nullable = false)
@@ -376,7 +376,7 @@ public class ItemPedido {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ItemPedido other = (ItemPedido) obj;
+		ItemPedidoFat other = (ItemPedidoFat) obj;
 		if (id == null) {
 			if (other.id != null)
 				return false;
@@ -384,19 +384,4 @@ public class ItemPedido {
 			return false;
 		return true;
 	}
-
-	@Override
-	public String toString() {
-		return "ItemPedido [id=" + id + ", pedido=" + pedido + ", produto=" + produto + ", complementoNatureza="
-				+ complementoNatureza + ", itemAliquotaUF=" + itemAliquotaUF + ", quantidade=" + quantidade
-				+ ", valorUnitario=" + valorUnitario + ", valorCusto=" + valorCusto + ", totalProdutoServico="
-				+ totalProdutoServico + ", valorDesconto=" + valorDesconto + ", valorOutras=" + valorOutras
-				+ ", valorFrete=" + valorFrete + ", valorSeguro=" + valorSeguro + ", valorInss=" + valorInss
-				+ ", valorIss=" + valorIss + ", valorIrrf=" + valorIrrf + ", valorCssl=" + valorCssl + ", valorPis="
-				+ valorPis + ", valorCofins=" + valorCofins + ", percentualIpi=" + percentualIpi + ", valorIpi="
-				+ valorIpi + ", baseIcms=" + baseIcms + ", aliquotaReducaoIcms=" + aliquotaReducaoIcms
-				+ ", aliquotaIcms=" + aliquotaIcms + ", aliquotaDiferimentoIcms=" + aliquotaDiferimentoIcms
-				+ ", valorIcms=" + valorIcms + ", valortotal=" + valortotal + "]";
-	}
-
 }

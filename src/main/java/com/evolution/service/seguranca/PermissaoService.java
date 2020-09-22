@@ -1,6 +1,5 @@
 package com.evolution.service.seguranca;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class PermissaoService {
 
 	@Transactional
 	public Permissao update(Long id, Permissao permissao) {
-		Permissao salvo = findById(id);
-
-		BeanUtils.copyProperties(permissao, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(permissao);
 	}
 
 	@Transactional
@@ -36,10 +35,7 @@ public class PermissaoService {
 	}
 
 	public Permissao findById(Long id) {
-		Permissao salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		Permissao salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
 }

@@ -1,6 +1,5 @@
 package com.evolution.service.adm;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class SubCategoriaProdutoService {
 
 	@Transactional
 	public SubCategoriaProduto update(Long id, SubCategoriaProduto subCategoriaProduto) {
-		SubCategoriaProduto salvo = findById(id);
-
-		BeanUtils.copyProperties(subCategoriaProduto, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(subCategoriaProduto);
 	}
 
 	@Transactional
@@ -36,10 +35,7 @@ public class SubCategoriaProdutoService {
 	}
 
 	public SubCategoriaProduto findById(Long id) {
-		SubCategoriaProduto salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		SubCategoriaProduto salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
 

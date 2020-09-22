@@ -1,13 +1,15 @@
-package com.evolution.email;
+package com.evolution.mail;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.templateresolver.SpringResourceTemplateResolver;
-import org.thymeleaf.templatemode.StandardTemplateModeHandlers;
+import org.thymeleaf.templatemode.TemplateMode;
+
 import java.nio.charset.StandardCharsets;
 
 @Configuration
+@SuppressWarnings("deprecation")
 public class ThymeleafConfig {
 
 	@Bean
@@ -22,7 +24,7 @@ public class ThymeleafConfig {
 		SpringResourceTemplateResolver emailTemplateResolver = new SpringResourceTemplateResolver();
 		emailTemplateResolver.setPrefix("classpath:/templates/");
 		emailTemplateResolver.setSuffix(".html");
-		emailTemplateResolver.setTemplateMode(StandardTemplateModeHandlers.HTML5.getTemplateModeName());
+		emailTemplateResolver.setTemplateMode(TemplateMode.HTML5);
 		emailTemplateResolver.setCharacterEncoding(StandardCharsets.UTF_8.name());
 		return emailTemplateResolver;
 	}

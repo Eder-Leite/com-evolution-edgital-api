@@ -1,6 +1,5 @@
 package com.evolution.service.livro;
 
-import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
@@ -23,10 +22,10 @@ public class CodigoCFOPService {
 
 	@Transactional
 	public CodigoCFOP update(Long id, CodigoCFOP codigoCFOP) {
-		CodigoCFOP salvo = findById(id);
-
-		BeanUtils.copyProperties(codigoCFOP, salvo, "id");
-		return repository.save(salvo);
+		
+		findById(id);
+		
+		return repository.save(codigoCFOP);
 	}
 
 	@Transactional
@@ -36,11 +35,7 @@ public class CodigoCFOPService {
 	}
 
 	public CodigoCFOP findById(Long id) {
-		CodigoCFOP salvo = repository.findOne(id);
-		if (salvo == null) {
-			throw new EmptyResultDataAccessException(1);
-		}
+		CodigoCFOP salvo = repository.findById(id).orElseThrow(() -> new EmptyResultDataAccessException(1));
 		return salvo;
 	}
-
 }
